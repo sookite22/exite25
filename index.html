@@ -74,6 +74,7 @@
 		<div id="map" class="absolute top-0 left-0 w-full h-full bg-gray-300 z-0"></div>
 		<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f609e2e59198d1e956232604f8ab6c4c"></script>
 	<!-- 지도 키값 변경 필요(키값 다름), 키 파일 env로 분리 필요-->
+
 		<script>
 			var container = document.getElementById('map');
 			var options = {
@@ -83,17 +84,16 @@
 			var map = new kakao.maps.Map(container, options);
 		</script>
 	</main>
+<script>
+  // 메인 페이지 로드 후 자동으로 팝업 열기
+  window.addEventListener('load', () => {
+    window.open(
+      'weatherPop.html',
+      'weatherPopup',
+      'width=350,height=300,top=100,left=100,toolbar=no,menubar=no,scrollbars=no'
+    );
+  });
+</script>
 
-  <!-- 날씨 정보 팝업 -->
-  <div id="weather-popup" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-30">
-    <div class="bg-white rounded-lg p-4 w-80 relative">
-      <button id="weather-popup-close" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">&times;</button>
-      <div id="weather-popup-content" class="space-y-1 text-sm">
-        <!-- JS에서 여기에 날씨 정보를 삽입합니다 -->
-      </div>
-    </div>
-  </div>
-  <!-- 날씨 팝업용 스크립트 (모달 HTML 뒤에 로드) -->
-  <script src="weather.js"></script>
 </body>
 </html>
