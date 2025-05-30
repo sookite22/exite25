@@ -76,17 +76,17 @@
 	<!-- 지도 키값 변경 필요(키값 다름), 키 파일 env로 분리 필요-->
 
 		<script>
+      // weather-api 추가 부분
 			var container = document.getElementById('map');
 			var options = {
-				center: new kakao.maps.LatLng(37.345086,  126.953209), 
+				center: new kakao.maps.LatLng(37.345086, 126.953209), 
 				level: 4
 			}; 
 			var map = new kakao.maps.Map(container, options);
 		</script>
 	</main>
 <script>
-  // 메인 페이지 로드 후 자동으로 팝업 열기
-  window.addEventListener('load', () => {
+  window.addEventListener('load', () => { // 메인 페이지 로드 후 자동으로 팝업 열기
     window.open(
       'weatherPop.html',
       'weatherPopup',
