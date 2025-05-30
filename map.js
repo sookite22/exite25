@@ -1,4 +1,4 @@
-var ps;
+
 
 // 로드뷰 함수
 function showRoadview(lat, lng) {
@@ -26,6 +26,7 @@ var mapContainer = document.getElementById('map'), // 지도를 표시할 div
     };  
  
 var map = new kakao.maps.Map(mapContainer, mapOption); 
+var ps;
 var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
 searchSheltersByLocation();
@@ -50,7 +51,7 @@ function searchSheltersByLocation() {
         };
 
         // 키워드 고정: "대피소"
-        ps.keywordSearch('대피소', placesSearchCB, options);
+        ps.keywordSearch('대피소', keywordSearchCB, options);
     }, function (error) {
         alert("위치 정보를 가져오지 못했습니다.");
     });
@@ -225,8 +226,8 @@ function removeAllChildNods(el) {
 
 var ps = new kakao.maps.services.Places(map); 
 
-ps.categorySearch('MT1', placesSearchCB, {useMapBounds:true}); 
-ps.categorySearch('CS2', placesSearchCB, {useMapBounds:true}); 
+ps.categorySearch('MT1', categorySearchCB, {useMapBounds:true}); 
+ps.categorySearch('CS2', categorySearchCB, {useMapBounds:true}); 
 
 // 키워드 검색 완료 시 호출되는 콜백함수
 function categorySearchCB (data, status, pagination) {
