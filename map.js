@@ -26,10 +26,10 @@ var mapContainer = document.getElementById('map'), // 지도를 표시할 div
     };  
  
 var map = new kakao.maps.Map(mapContainer, mapOption); 
-var ps;
+var ps = new kakao.maps.services.Places(map);
 var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
-searchSheltersByLocation();
+document.getElementById("searchBtn").addEventListener("click", searchSheltersByLocation);
 
 // 대피소 검색 함수
 function searchSheltersByLocation() {
