@@ -14,7 +14,6 @@ function showRoadview(lat, lng) {
 
 
 
-
 // 키워드로 장소 검색
 
 // 마커를 담을 배열입니다
@@ -56,6 +55,17 @@ function searchSheltersByLocation() {
         alert("위치 정보를 가져오지 못했습니다.");
     });
 }
+
+// placesSearchCB 함수
+function placesSearchCB(data, status, pagination) {
+  if (status === kakao.maps.services.Status.OK) {
+    console.log('검색 결과:', data);
+    // 여기서 리스트 출력, 마커 생성 등 추가 작업 수행
+  } else {
+    console.error('장소 검색 실패:', status);
+  }
+}
+
 
 // 장소 검색 완료시 콜백함수
 function keywordSearchCB(data, status, pagination) {
