@@ -44,33 +44,82 @@ function initializeMapLocation() {
 initializeMapLocation();
 
 // 검색 버튼 클릭 시 실행
-document.getElementById("searchBtn").addEventListener("click", searchByCenter);
+// document.getElementById("searchBtn").addEventListener("click", searchByCenter);
 
-function searchByCenter() {
-    var center = map.getCenter();
+document.getElementById("searchBtn").addEventListener("click", () => {
+    const center = map.getCenter();
+    const lat = center.getLat();
+    const lng = center.getLng();
+
+    removeAllMarkers();
+    removeAllChildNods(document.getElementById('placesList'));
+
+    searchSheltersFromAPI(lat, lng); // 행안부 API 사용
+    searchNearbyShops(lat, lng);     // 카카오 categorySearch 사용
+});
+
+
+function searchSheltersFromAPI(lat, lng) {
+    const radius = 3000; // 3km
+    const url = `/api/shelters?lat=${lat}&lng=${lng}&radius=${radius}`;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.body && data.body.items) {
+                data.body.items.forEach((shelter, idx) => {
+                    const lat = parseFloat(shelter.YMAP_CRTS);
+                    const lng = parseFloat(shelter.XMAP_CRTS);
+                    const position = new kakao.maps.LatLng(lat, lng);
+
+                    const marker = new kakao.maps.Marker({
+                        position: position,
+                        map: map
+                    });
+
+                    kakao.maps.event.addListener(marker, 'click', () => {
+                        infowindow.setContent(`<div style="padding:5px;font-size:12px;">${shelter.THINGS_NM || '이름 없음'}</div>`);
+
+                        infowindow.open(map, marker);
+                    });
+
+                    keywordMarkers.push(marker);
+                });
+            } else {
+                alert('대피소 데이터를 가져오지 못했습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('행안부 API 오류:', error);
+            alert('대피소 정보 요청 중 오류가 발생했습니다.');
+        });
+}
+
+function searchNearbyShops(lat, lng) {
+    const center = new kakao.maps.LatLng(lat, lng);
     const searchOptions = {
         location: center,
         radius: 3000
     };
 
-    removeAllMarkers();
-    removeAllChildNods(document.getElementById('placesList'));
-
-    ps.keywordSearch('대피소', keywordSearchCB, searchOptions);
-    ps.categorySearch('MT1', categorySearchCB, searchOptions);
-    ps.categorySearch('CS2', categorySearchCB, searchOptions);
+    ps.categorySearch('MT1', categorySearchCB, searchOptions); // 대형마트
+    ps.categorySearch('CS2', categorySearchCB, searchOptions); // 편의점
 }
 
-function keywordSearchCB(data, status, pagination) {
-    if (status === kakao.maps.services.Status.OK) {
-        displayPlaces(data);
-        displayPagination(pagination);
-    } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-        alert('검색 결과가 없습니다.');
-    } else {
-        alert('검색 중 오류가 발생했습니다.');
-    }
-}
+
+
+// function keywordSearchCB(data, status, pagination) {
+//     if (status === kakao.maps.services.Status.OK) {
+//         displayPlaces(data);
+//         displayPagination(pagination);
+//     } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+//         alert('검색 결과가 없습니다.');
+//     } else {
+//         alert('검색 중 오류가 발생했습니다.');
+//     }
+// }
+
+
 
 function categorySearchCB(data, status, pagination) {
     if (status === kakao.maps.services.Status.OK) {

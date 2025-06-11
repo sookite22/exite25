@@ -21,21 +21,29 @@
 
 
  <!-- 카카오 지도 SDK: 한번만 불러오기 (필요한 라이브러리 포함) -->
-  <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f609e2e59198d1e956232604f8ab6c4c&libraries=services,clusterer,controls"></script>
-
-<!-- 검색창 -->
-  <div class="absolute top-4 left-4 z-30 bg-white p-4 rounded shadow-lg">
-    <button id="searchBtn">대피소 검색</button>
-    <div id="pagination" class="flex gap-1 mt-2 flex-wrap text-xs"></div>
-  </div>
+  <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=f609e2e59198d1e956232604f8ab6c4c&libraries=services,clusterer,controls"></script>
 
   <!-- 지도 영역 -->
   <div id="map" style="width:100%; height:100vh;"></div>
 
+<!-- 검색 영역 전체를 묶는 부모 -->
+<div class="absolute top-14 left-4 z-30 bg-white/60 backdrop-blur p-4 rounded shadow-lg space-y-4">
+
+  <!-- 검색 버튼 -->
+  <div>
+    <button id="searchBtn" class="text-sm px-3 py-1 bg-blue-500 text-white rounded">
+      대피소 검색
+    </button>
+    <div id="pagination" class="flex gap-1 mt-2 flex-wrap text-xs"></div>
+  </div>
+
   <!-- 검색 결과 리스트 -->
-  <div class="absolute top-28 left-4 z-20 w-72 bg-white p-4 overflow-y-auto shadow-lg rounded max-h-[400px]">
+  <div class="w-72 overflow-y-auto max-h-[400px]">
     <ul id="placesList" class="space-y-2 text-sm"></ul>
   </div>
+
+</div>
+
 
   <!-- 로드뷰 영역 -->
   <div id="roadview" class="absolute bottom-4 right-4 z-20 border-2 border-gray-300 shadow-md rounded w-[320px] h-[240px] hidden"></div>
