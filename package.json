@@ -1,0 +1,26 @@
+{
+  "name": "exite2501",
+  "version": "1.0.0",
+  "main": "map.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/binitime/exite2501.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/binitime/exite2501/issues"
+  },
+  "homepage": "https://github.com/binitime/exite2501#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0",
+    "node-fetch": "^2.7.0",
+    "xml2js": "^0.6.2"
+  }
+}

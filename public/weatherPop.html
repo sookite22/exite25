@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>실시간 날씨</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-4 bg-white text-gray-800 font-sans">
+  <div id="weather-container" class="space-y-2 text-center">
+    <h1 class="text-xl font-bold">현재 날씨</h1>
+    <div id="weather-info" class="text-sm">
+      <!-- JS가 여기 채워넣음 -->
+      <p>로딩 중…</p>
+    </div>
+    <button onclick="window.close()" class="mt-4 px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">
+      닫기
+    </button>
+  </div>
+
+  <script>
+    // → 실제 키로 바꿔주세요
+    const apiKey = '00aa787f50fd371cca6b48bf46674a2d';
+    // → 미리 설정해둔 위치(예: 서울)
+    const lat = 37.345086, lon = 126.953209;
+
+    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=kr&appid=${apiKey}`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('weather-info').innerHTML = `
+          <p><strong>지역:</strong> ${data.name}</p>
+          <p><strong>온도:</strong> ${data.main.temp}°C</p>
+          <p><strong>습도:</strong> ${data.main.humidity}%</p>
+          <p><strong>날씨:</strong> ${data.weather[0].description}</p>
+        `;
+      })
+      .catch(err => {
+        document.getElementById('weather-info').innerText = '날씨 정보를 불러오는 중 오류가 발생했습니다.';
+        console.error(err);
+      });
+  </script>
+</body>
+<!-- <script>
+  // 메인 페이지 로드 후 자동으로 팝업 열기
+  window.addEventListener('load', () => {
+    window.open(
+      'weatherPop.html',
+      'weatherPopup',
+      'width=350,height=300,top=100,left=100,toolbar=no,menubar=no,scrollbars=no'
+    );
+  });
+</script> -->
+
+</html>

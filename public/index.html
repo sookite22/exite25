@@ -1,0 +1,68 @@
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>대피할지도</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 카카오 지도 SDK: 한번만 불러오기 (필요한 라이브러리 포함) -->
+  <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=f609e2e59198d1e956232604f8ab6c4c&libraries=services,clusterer,controls"></script>
+
+</head>
+<body class="relative h-screen w-screen font-sans bg-gray-100 overflow-hidden">
+
+  <!-- 상단 메뉴 -->
+  <header class="absolute top-0 left-0 w-full flex items-center justify-between bg-white shadow-md px-4 py-2 z-20">
+    <div class="flex items-center space-x-2">
+      <img src="https://www.safemap.go.kr/img/logo.png" alt="logo" class="h-8">
+      <h1 class="text-lg font-bold">대피할지도</h1>
+    </div>
+    <nav class="flex items-center space-x-2 text-sm">
+      <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded">일반지도</button>
+      <button class="bg-gray-100 px-3 py-1 rounded">위성지도</button>
+    </nav>
+  </header>
+
+
+ 
+  <!-- 지도 영역 -->
+  <div id="map" style="width:100%; height:100vh;"></div>
+
+<!-- 검색 영역 전체를 묶는 부모 -->
+<div class="absolute top-14 left-4 z-30 bg-white/60 backdrop-blur p-4 rounded shadow-lg space-y-4">
+
+  <!-- 검색 버튼 -->
+  <div>
+    <button id="searchBtn" class="text-sm px-3 py-1 bg-blue-500 text-white rounded">
+      대피소 검색
+    </button>
+    <div id="pagination" class="flex gap-1 mt-2 flex-wrap text-xs"></div>
+  </div>
+
+  <!-- 검색 결과 리스트 -->
+  <div class="w-72 overflow-y-auto max-h-[400px]">
+    <ul id="placesList" class="space-y-2 text-sm"></ul>
+  </div>
+
+</div>
+
+
+  <!-- 로드뷰 영역 -->
+  <div id="roadview" class="absolute bottom-4 right-4 z-20 border-2 border-gray-300 shadow-md rounded w-[320px] h-[240px] hidden"></div>
+
+
+<script>
+  // 메인 페이지 로드 후 자동으로 팝업 열기
+  window.addEventListener('load', () => {
+    window.open(
+      'weatherPop.html',
+      'weatherPopup',
+      'width=350,height=300,top=100,left=100,toolbar=no,menubar=no,scrollbars=no'
+    );
+  });
+</script>
+
+<script src="map.js"></script>
+
+
+</body>
+</html>
