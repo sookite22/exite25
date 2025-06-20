@@ -26,15 +26,17 @@ function showRoadview(lat, lng) {
 }
 
 // 초기 지도 위치를 사용자 현재 위치로 설정
+var mylat = 37.566826;
+var mylng = 126.9786567;
 function initializeMapLocation() {
     if (!navigator.geolocation) {
         alert("브라우저가 위치 정보를 지원하지 않습니다.");
         return;
     }
     navigator.geolocation.getCurrentPosition(function (position) {
-        var lat = position.coords.latitude;
-        var lng = position.coords.longitude;
-        var center = new kakao.maps.LatLng(lat, lng);
+        mylat = position.coords.latitude;
+        mylng = position.coords.longitude;
+        var center = new kakao.maps.LatLng(mylat, mylng);
         map.setCenter(center);
     }, function (error) {
         alert("위치 정보를 가져오지 못했습니다.");
@@ -210,8 +212,19 @@ function displayMarker(place) {
     });
 
     kakao.maps.event.addListener(marker, 'click', function () {
-        infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
-        infowindow.open(map, marker);
+    const latlng = marker.getPosition();
+    markerlat = latlng.getLat();
+    markerlng = latlng.getLng();
+   
+    //길찾기 버튼추가
+    const content = `
+        <div style="padding:5px; font-size:12px;">
+            ${place.place_name}<br>
+            <button onclick="handleInfowindowButton('${place.place_name}', ${markerlat}, ${markerlng})">길찾기</button>
+        </div>
+    `;
+    infowindow.setContent(content);
+    infowindow.open(map, marker);
     });
 
     categoryMarkers.push(marker);
@@ -279,3 +292,88 @@ function removeAllChildNods(el) {
 
 // 교통정보
 map.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC);
+
+
+// 현재위치 
+  document.addEventListener("DOMContentLoaded", () =>
+    document.getElementById("mylocationBtn")?.addEventListener("click", () =>
+        initializeMapLocation(),
+        
+    )
+  );
+
+
+
+//카카오모빌리티 길찾기API
+let polyline = null;
+
+async function getDirection() {
+    const REST_API_KEY = '28706b15d44827253d90da40e5ade8a9'; 
+    const url = 'https://apis-navi.kakaomobility.com/v1/directions';
+
+   // 출발지origin 목적지destination 좌표
+    const origin = `${mylng},${mylat}`;
+    const destination = `${markerlng},${markerlat}`;
+
+    const queryParams = new URLSearchParams({
+      origin: origin,
+      destination: destination,
+      priority: 'RECOMMEND'
+    });
+    
+    const requestUrl = `${url}?${queryParams}`;
+
+     try {
+    const response = await fetch(requestUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: `KakaoAK ${REST_API_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      
+    const data = await response.json(); 
+//길찾기좌표
+    const linePath = [];
+    data.routes[0].sections[0].roads.forEach(router => {
+      for (let i = 0; i < router.vertexes.length; i += 2) {
+        const lng = router.vertexes[i];
+        const lat = router.vertexes[i + 1];
+        linePath.push(new kakao.maps.LatLng(lat, lng));
+      }
+    });
+//선그리기
+    if (polyline) {
+        polyline.setMap(null);
+        polyline = null;
+      }
+
+    polyline = new kakao.maps.Polyline({
+      path: linePath,
+      strokeWeight: 5,
+      strokeColor: '#000000',
+      strokeOpacity: 0.7,
+      strokeStyle: 'solid',
+      endArrow: true
+    });
+    polyline.setMap(map);
+
+    } catch (error) {
+      console.error('Error:', error);
+    }   
+}
+
+//길찾기
+function handleInfowindowButton() {
+    const myPosition = new kakao.maps.LatLng(mylat, mylng);
+      const mymarker = new kakao.maps.Marker({
+        position: myPosition
+      });
+      mymarker.setMap(map); 
+    getDirection();
+
+}
