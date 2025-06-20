@@ -218,9 +218,9 @@ function displayMarker(place) {
    
     //길찾기 버튼추가
     const content = `
-        <div style="padding:5px; font-size:12px;">
+        <div style="padding:5px; font-size:15px;">
             ${place.place_name}<br>
-            <button onclick="handleInfowindowButton('${place.place_name}', ${markerlat}, ${markerlng})">길찾기</button>
+            <button style="color:blue;" onclick="directionBtn('${place.place_name}', ${markerlat}, ${markerlng})">길찾기</button>
         </div>
     `;
     infowindow.setContent(content);
@@ -306,7 +306,6 @@ map.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC);
 
 //카카오모빌리티 길찾기API
 let polyline = null;
-
 async function getDirection() {
     const REST_API_KEY = '28706b15d44827253d90da40e5ade8a9'; 
     const url = 'https://apis-navi.kakaomobility.com/v1/directions';
@@ -337,6 +336,8 @@ async function getDirection() {
       }
       
     const data = await response.json(); 
+
+
 //길찾기좌표
     const linePath = [];
     data.routes[0].sections[0].roads.forEach(router => {
@@ -346,6 +347,23 @@ async function getDirection() {
         linePath.push(new kakao.maps.LatLng(lat, lng));
       }
     });
+
+    //출발지 인포 
+    const myPosition = new kakao.maps.LatLng(mylat, mylng);
+      mymarker = new kakao.maps.Marker({
+      position: myPosition
+      });
+      mymarker.setMap(map); 
+
+    const iwcontent = `
+    <div style="padding:5px; font-size:15px;">출발위치 <br>
+    <button style="color:blue;" onclick="changeBtn(${mylat}, ${mylng})">출발지 재설정</button>
+        </div>
+    `;
+    infowindow.setContent(iwcontent);
+    infowindow.open(map, mymarker);
+
+
 //선그리기
     if (polyline) {
         polyline.setMap(null);
@@ -367,13 +385,24 @@ async function getDirection() {
     }   
 }
 
-//길찾기
-function handleInfowindowButton() {
-    const myPosition = new kakao.maps.LatLng(mylat, mylng);
-      const mymarker = new kakao.maps.Marker({
-        position: myPosition
-      });
-      mymarker.setMap(map); 
+//길찾기 버튼
+function directionBtn() {
     getDirection();
+}
+
+//출발지재설정
+function changeBtn() {
+alert('출발지를 클릭해주세요!');
+
+kakao.maps.event.addListener(map, 'click', function(mouseEvent) {   
+    const latlng = mouseEvent.latLng;
+    mylat = latlng.getLat();
+    mylng = latlng.getLng();     
+    mymarker.setPosition(new kakao.maps.LatLng(mylat, mylng));
+
+    alert('출발지 재설정 성공!');
+    getDirection();
+});
+
 
 }
